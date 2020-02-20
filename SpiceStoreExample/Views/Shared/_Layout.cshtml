@@ -6,8 +6,10 @@
     <title>@ViewData["Title"] - SpiceStoreExample</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <script src="https://kit.fontawesome.com/3ef03d0fe3.js" crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="search-background">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container">
@@ -25,7 +27,7 @@
                                 Content Management
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
-                                <a class="dropdown-item">Category</a>
+                                <a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="Admin" >Category</a>
                                 <a class="dropdown-item">Sub Category</a>
                                 <a class="dropdown-item">Menu Item</a>
                                 <a class="dropdown-item">Coupons</a>

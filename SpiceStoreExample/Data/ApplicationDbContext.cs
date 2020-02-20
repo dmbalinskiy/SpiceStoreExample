@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SpiceStoreExample.Models;
 
 namespace SpiceStoreExample.Data
 {
@@ -12,5 +13,7 @@ namespace SpiceStoreExample.Data
             : base(options)
         {
         }
+
+        public DbSet<Category> Category { get; set; }
     }
 }
