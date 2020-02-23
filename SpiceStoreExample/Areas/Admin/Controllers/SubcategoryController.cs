@@ -192,6 +192,7 @@ namespace SpiceStoreExample.Areas.Admin.Controllers
 
         //POST - DELETE
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(SubcategoryAndCategoryViewModel vm)
         {
             if(ModelState.IsValid)
