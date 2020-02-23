@@ -70,6 +70,11 @@ namespace SpiceStoreExample.Areas.Admin.Controllers
         private async Task<SubcategoryAndCategoryViewModel> getEmptyVm(
             Subcategory subcat = null, string msg = null)
         {
+            if(subcat != null && subcat.Category == null)
+            {
+                subcat.Category = await _db.Category.FindAsync(subcat.CategoryId);
+            }
+
             return new SubcategoryAndCategoryViewModel()
             {
                 CategoryList = await _db.Category.ToListAsync(),
@@ -112,7 +117,7 @@ namespace SpiceStoreExample.Areas.Admin.Controllers
         //POST - EDIT
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, SubcategoryAndCategoryViewModel subcatCatVm)
+        public async Task<IActionResult> Edit(SubcategoryAndCategoryViewModel subcatCatVm)
         {
             if (ModelState.IsValid)
             {
@@ -130,7 +135,9 @@ namespace SpiceStoreExample.Areas.Admin.Controllers
                 }
                 else
                 {
-                    _db.Subcategory.Add(subcatCatVm.Subcategory);
+                    var subcat = await _db.Subcategory.FindAsync(subcatCatVm.Subcategory.Key);
+                    //only update currently change property
+                    subcat.Name = subcatCatVm.Subcategory.Name;
                     await _db.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -140,6 +147,61 @@ namespace SpiceStoreExample.Areas.Admin.Controllers
             return View(await getEmptyVm(subcatCatVm.Subcategory, StatusMessage));
         }
 
+        //GET - DETAILS
+        public async Task<IActionResult> Details(int? id)
+        {
+            if(id==null)
+            {
+                return NotFound();
+            }
+            var subcat = await _db.Subcategory.SingleOrDefaultAsync(s => s.Key == id);
+            if(subcat==null)
+            {
+                return NotFound();
+            }
+            return View(await getEmptyVm(subcat));
+        }
+
+        //POST - DETAILS
+        [HttpPost()]
+        [ValidateAntiForgeryToken]
+        public IActionResult Details(SubcategoryAndCategoryViewModel vm)
+        {
+            if(vm != null && ModelState.IsValid)
+            {
+                //workaround - redirect to action with parameter like instance of anonymus type
+                return RedirectToAction(nameof(Edit), new { id = vm.Subcategory.Key });
+            }
+            return View(vm);
+        }
+
+        //GET - DELETE
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if(id ==null)
+            {
+                return NotFound();
+            }
+            var subcat = await _db.Subcategory.SingleOrDefaultAsync(s => s.Key == id);
+            if(subcat == null)
+            {
+                return NotFound();
+            }
+            return View(await getEmptyVm(subcat));
+        }
+
+        //POST - DELETE
+        [HttpPost]
+        public async Task<IActionResult> Delete(SubcategoryAndCategoryViewModel vm)
+        {
+            if(ModelState.IsValid)
+            {
+                _db.Subcategory.Remove(vm.Subcategory);
+                await _db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(vm);
+        }
 
 
         private ApplicationDbContext _db;

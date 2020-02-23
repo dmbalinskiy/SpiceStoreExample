@@ -7,7 +7,7 @@
 }
 
 <br />
-<h2 class="text-info">Create subcategory</h2>
+<h2 class="text-info">Edit subcategory</h2>
 <br />
 
 <partial name="_StatusMessage" model="Model.StatusMessage" />
@@ -16,7 +16,12 @@
 
     <div class="col-8 border-right">
         <form asp-action="Edit">
-            <input 
+            <!-- Hidden field - for category id transfering _inside_ viewmodel object -->
+            <input type="hidden" asp-for="Subcategory.CategoryId" />
+
+            <!-- The same for the key -->
+            <input type="hidden" asp-for="Subcategory.Key" />
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div id="first" class="form-group row">
                 <div class="col-3">
@@ -24,6 +29,7 @@
                 </div>
                 <div class="col-5">
                     <select id="ddlCategoryList"
+                            disabled
                             asp-for="Subcategory.CategoryId"
                             asp-items="Model.CategoryList.ToSelectListItem(Model.Subcategory.CategoryId)"
                             class="form-control">
@@ -41,7 +47,7 @@
             </div>
             <div class="form-group row">
                 <div class="col-5 offset-3">
-                    <partial name="_CreateAndBackToListButton" />
+                    <partial name="_EditAndBackToListButton" model="@Model.Subcategory.Key" />
                 </div>
             </div>
         </form>
@@ -86,10 +92,6 @@
             });
         }
         $(document).ready(function () {
-            updateSubcategoryList();
-        });
-
-        $("#ddlCategoryList").on("change", function () {
             updateSubcategoryList();
         });
 

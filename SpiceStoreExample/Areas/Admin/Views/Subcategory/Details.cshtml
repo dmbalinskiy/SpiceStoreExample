@@ -1,0 +1,49 @@
+﻿@model SpiceStoreExample.Models.ViewModels.SubcategoryAndCategoryViewModel
+@using SpiceStoreExample.Extensions
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2 class="text-info">Subcategory details</h2>
+<br />
+
+<div class="border backgroundWhite row">
+
+    <div class="col-8 border-right">
+        <form asp-action="Details">
+            <!-- Hidden field - for category id transfering _inside_ viewmodel object -->
+            <input type="hidden" asp-for="Subcategory.CategoryId" />
+
+            <!-- The same for the key -->
+            <input type="hidden" asp-for="Subcategory.Key" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="first" class="form-group row">
+                <div class="col-3">
+                    <label asp-for="Subcategory.CategoryId" class="col-form-label"></label>
+                </div>
+                <div class="col-5">
+                    <input asp-for="Subcategory.Category.Name" readonly class="form-control" />
+                </div>
+            </div>
+            <div id="second" class="form-group row">
+                <div class="col-3">
+                    <label asp-for="Subcategory.Name" class="col-form-label"></label>
+                </div>
+                <div class="col-5">
+                    <input asp-for="Subcategory.Name" readonly class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-5 offset-3">
+                    <partial name="_DetailsAndBackToListButton" model="@Model.Subcategory.Key" />
+                </div>
+            </div>
+        </form>
+    </div>
+    
+</div>
+
