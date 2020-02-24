@@ -140,9 +140,6 @@ namespace SpiceStoreExample.Areas.Admin.Controllers
                 return View(MenuItemVM);
             }
 
-            //_db.MenuItem.Add(MenuItemVM.MenuItem);
-            //await _db.SaveChangesAsync();
-
             //images saving section
             string webRootPath = _hostingEnv.WebRootPath;
             var files = HttpContext.Request.Form.Files;
@@ -182,6 +179,82 @@ namespace SpiceStoreExample.Areas.Admin.Controllers
 
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        //GET - DETAILS
+        public async Task<IActionResult> Details(int? id)
+        {
+            if(id==null)
+            {
+                return NotFound();
+            }
+            var item = await _db.MenuItem
+                .Include(x => x.Category)
+                .Include(x => x.Subcategory)
+                .Where(x => x.Id == id)
+                .SingleOrDefaultAsync();
+            if(item==null)
+            {
+                return NotFound();
+            }
+            MenuItemVM = new MenuItemViewModel()
+            {
+                MenuItem = item,
+            };
+            return View(MenuItemVM);
+        }
+
+        //POST - DETAILS
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DetailsPost(int? id)
+        {
+            if(id != null && ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(Edit), new { @id = id});
+            }
+            return View(MenuItemVM);
+
+        }
+
+        //GET - DELETE
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var menuItem = 
+                await _db.MenuItem
+                .Include(t => t.Category)
+                .Include(t => t.Subcategory)
+                .Where(i => i.Id == id).SingleOrDefaultAsync();
+            if(menuItem == null)
+            {
+                return NotFound();
+            }
+            MenuItemVM = new MenuItemViewModel()
+            {
+                MenuItem = menuItem
+            };
+            return View(MenuItemVM);
+        }
+
+        //POST - DELETE
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePost()
+        {
+            if(ModelState.IsValid && 
+                MenuItemVM != null && 
+                MenuItemVM.MenuItem != null)
+            {
+                var item = await _db.MenuItem.FindAsync(MenuItemVM.MenuItem.Id);
+                _db.MenuItem.Remove(item);
+                await _db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(MenuItemVM);
         }
 
         private readonly ApplicationDbContext _db;
