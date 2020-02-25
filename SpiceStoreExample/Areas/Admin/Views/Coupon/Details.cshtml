@@ -1,0 +1,89 @@
+﻿@model Coupon
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2 class="text-info">Coupon details</h2>
+<br />
+
+<form method="post" enctype="multipart/form-data" asp-action="Details">
+    <div class="border backgroundWhite">
+
+        <!--for validation message displaying-->
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <!--Name-->
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Name" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Name" readonly class="form-control" />
+            </div>
+        </div>
+
+        <!--Picture - displaying only -->
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Picture" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <img src="@ViewBag.ImgString"
+                     width="100%"
+                     style="border-radius:5px;border: 1px solid #bbb9b9;" />
+            </div>
+        </div>
+
+        <!--Coupon type-->
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="CouponType" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="CouponType" readonly class="form-control" />
+            </div>
+        </div>
+
+        <!--Discount-->
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Discount" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Discount" readonly class="form-control" />
+            </div>
+        </div>
+
+        <!--Minimum amount-->
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="MinimumAmount" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="MinimumAmount" readonly class="form-control" />
+            </div>
+        </div>
+
+        <!--Is active-->
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="IsActive" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="checkbox" asp-for="IsActive" disabled class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-5 offset-2">
+                <partial name="_DetailsAndBackToListButton" model="Model.Id" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
