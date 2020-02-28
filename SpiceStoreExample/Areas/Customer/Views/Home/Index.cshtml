@@ -1,8 +1,84 @@
-﻿@{
+﻿@model SpiceStoreExample.Models.ViewModels.IndexViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@if (Model.Coupon.Any())
+{
+    <div class="border">
+        <div class="carousel" data-ride="carousel" data-interval="2500">
+
+            @for (int i = 0; i < Model.Coupon.Count(); i++)
+            {
+                if (i == Model.Coupon.Count() - 1 )
+                {
+            <div class="carousel-item active">
+                @{
+                    var item = Model.Coupon.ElementAtOrDefault(i);
+                    string strBase64 =  item.Picture != null ? Convert.ToBase64String(item.Picture): "";
+                    var imgSrc = $"data:img/jpeg;base64,{strBase64}";
+                }
+                <img src="@imgSrc" height="50px" class="d-block w-100" />
+            </div>
+                }
+                else
+                {
+        <div class="carousel-item">
+            @{
+                var item = Model.Coupon.ElementAtOrDefault(i);
+                string strBase64 =  item.Picture != null ? Convert.ToBase64String(item.Picture): "";
+                var imgSrc = $"data:img/jpeg;base64,{strBase64}";
+            }
+            <img src="@imgSrc" height="50px" class="d-block w-100" />
+        </div>
+                }
+
+
+            }
+        </div>
+    </div>
+}
+
+<br/> <br/>
+
+<div class="backgroundWhite container">
+
+    <ul id="menu-filters" class="menu-filter-list list-inline text-center">
+        <li class="filter active btn btn-secondary ml-1 mr-1" data-filter=".menu-restaurant" >Show All</li>
+        @foreach(var item in Model.Category)
+        {
+            <li class="filter ml-1 mr-1" data-filter=".@item.Name.Replace(" ", string.Empty)">@item.Name</li>
+        }
+    </ul>
+
+    @foreach(var category in Model.Category)
+    {
+        <div class="row" id="menu-wrapper">
+            <partial name="_ThumbnailAreaPartial" model="@Model.MenuItem.Where(c => c.Category.Name.Equals(category.Name))"/>
+        </div>
+    }
+
 </div>
+
+@section Scripts{ 
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
+    
+    <script>
+        var posts = $('.post');
+        (function ($) {
+            $("#menu-filters li").click(function() {
+                $("#menu-filters li").removeClass('active btn btn-secondary');
+                $(this).addClass('active btn btn-secondary');
+
+                var selectedFilter = $(this).data("filter");
+                $(".menu-restaurant").fadeOut();
+                setTimeout(function () {
+                    $(selectedFilter).slideDown();
+                }, 300);
+            });
+        })(jQuery);
+    </script>
+}
+
