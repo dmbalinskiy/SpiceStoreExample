@@ -17,6 +17,16 @@ namespace SpiceStoreExample.Utility
 		public const string ShoppingCartCount = "ssCartCount"; 
 		public const string CouponCode = "ssCouponCode";
 
+		public const string statusSubmitted = "Submitted";
+		public const string statusInProcess = "Being Prepared";
+		public const string statusReady = "Ready for Pickup";
+		public const string statusCompleted = "Completed";
+		public const string statusCanceled = "Canceled";
+
+		public const string PaymentStatusPending = "Pending";
+		public const string PaymentStatusApproved = "Approved";
+		public const string PaymentStatusRejected = "Rejected";
+
 
 		public static string ConvertToRawHtml(string source)
 		{
