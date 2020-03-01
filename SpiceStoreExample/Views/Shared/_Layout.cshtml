@@ -1,4 +1,8 @@
 ﻿@using SpiceStoreExample.Utility
+@using Microsoft.AspNetCore.Http
+
+//dependency injection 
+@inject IHttpContextAccessor HttpContextAccessor
 
 <!DOCTYPE html>
 <html lang="en">
@@ -46,11 +50,26 @@
                         }
                         else if (User.IsInRole(Consts.CustomerEndUser) || !User.Identity.IsAuthenticated)
                         {
-                            <li style="color:white">
-                                <a href="#" class="nav-link">
-                                    <i class="fas fa-shopping-cart"></i> &nbsp; (0)
-                                </a>
-                            </li>
+                            if (HttpContextAccessor.HttpContext.Session.GetInt32(Consts.ShoppingCartCount) != null)
+                            {
+                                <li style="color:white">
+                                    <a href="#" class="nav-link">
+                                        @{
+                                            var count = HttpContextAccessor.HttpContext.Session.GetInt32(Consts.ShoppingCartCount);
+                                        }
+                                        <i class="fas fa-shopping-cart"></i> &nbsp; (@count)
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li style="color:white">
+                                    <a href="#" class="nav-link">
+                                        <i class="fas fa-shopping-cart"></i> &nbsp; (0)
+                                    </a>
+                                </li>
+                            }
+
                         }
 
 

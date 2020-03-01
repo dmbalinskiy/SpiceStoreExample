@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using SpiceStoreExample.Data;
 using SpiceStoreExample.Models;
 using SpiceStoreExample.Models.ViewModels;
+using SpiceStoreExample.Utility;
 
 namespace SpiceStoreExample.Controllers
 {
@@ -39,6 +40,16 @@ namespace SpiceStoreExample.Controllers
                 Category = await _db.Category.ToListAsync(),
                 Coupon = await _db.Coupon.Where(c => c.IsActive).ToListAsync()
             };
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            //claim isn't null -> user is authorized
+            if(claim != null)
+            {
+                var cnt = _db.ShoppingCart.Where(u => u.ApplicationUserId == claim.Value).Count();
+                HttpContext.Session.SetInt32(Consts.ShoppingCartCount, cnt);
+            }
 
             return View(IndexViewModel);
         }
@@ -90,7 +101,7 @@ namespace SpiceStoreExample.Controllers
                 var count = _db.ShoppingCart.Where(c => c.ApplicationUserId == CartObject.ApplicationUserId).Count();
                 
                 //saving data inside session
-                HttpContext.Session.SetInt32("ssCartCount", count);
+                HttpContext.Session.SetInt32(Consts.ShoppingCartCount, count);
                 return RedirectToAction("Index");
             }
             else
