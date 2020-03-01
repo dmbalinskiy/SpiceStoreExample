@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using SpiceStoreExample.Utility;
 
 namespace SpiceStoreExample.Areas.Admin.Controllers
 {
+    [Authorize(Roles = Consts.ManagerUser)]
     [Area("Admin")]
     public class CouponController : Controller
     {
@@ -191,7 +193,7 @@ namespace SpiceStoreExample.Areas.Admin.Controllers
             {
                 byte[] p1 = null;
                 string dummyPath =
-                    System.IO.Path.Combine(_env.WebRootPath, @"images", StaticDetails.DefaultFoodImage);
+                    System.IO.Path.Combine(_env.WebRootPath, @"images", Consts.DefaultFoodImage);
                 if (System.IO.File.Exists(dummyPath))
                 {
                     using (var fs = System.IO.File.OpenRead(dummyPath))

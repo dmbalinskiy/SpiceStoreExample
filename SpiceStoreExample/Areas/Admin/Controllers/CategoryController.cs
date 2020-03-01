@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpiceStoreExample.Data;
 using SpiceStoreExample.Models;
+using SpiceStoreExample.Utility;
 
 namespace SpiceStoreExample.Areas.Admin.Controllers
 {
+    [Authorize(Roles = Consts.ManagerUser)]
     [Area("Admin")]
     public class CategoryController : Controller
     {

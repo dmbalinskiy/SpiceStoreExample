@@ -12,6 +12,8 @@ using SpiceStoreExample.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SpiceStoreExample.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace SpiceStoreExample
 {
@@ -30,10 +32,33 @@ namespace SpiceStoreExample
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+
+            services.AddIdentity<IdentityUser, IdentityRole>(
+                //switched on options requires account confirmation - problems with login and further testing
+                //options => options.SignIn.RequireConfirmedAccount = true
+                ) 
+                .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddSingleton<IEmailSender, EmailSender>();
+
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
+
+            services.AddSession(options =>
+            {
+                options.Cookie.IsEssential = true;
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,9 +77,13 @@ namespace SpiceStoreExample
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            
+
+            app.UseCookiePolicy();
+            app.UseSession();
+
 
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using SpiceStoreExample.Utility;
 
 namespace SpiceStoreExample.Areas.Admin.Controllers
 {
+    [Authorize(Roles = Consts.ManagerUser)]
     [Area("Admin")]
     public class MenuItemController : Controller
     {
@@ -83,7 +85,7 @@ namespace SpiceStoreExample.Areas.Admin.Controllers
             else
             {
                 //no files were uploaded, use default
-                var uploads = Path.Combine(webRootPath, @"images", StaticDetails.DefaultFoodImage);
+                var uploads = Path.Combine(webRootPath, @"images", Consts.DefaultFoodImage);
                 System.IO.File.Copy(uploads, webRootPath + @"\images\" + MenuItemVM.MenuItem.Id + ".png");
                 menuItemFromDb.Image = @"\images\" + MenuItemVM.MenuItem.Id + ".png";
             }

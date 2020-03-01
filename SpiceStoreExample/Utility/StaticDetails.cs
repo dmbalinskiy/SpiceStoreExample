@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SpiceStoreExample.Utility
 {
-    public static class StaticDetails
+    public static class Consts
     {
         public const string DefaultFoodImage = "default_food.png";
         public const string ManagerUser = "Manager";
