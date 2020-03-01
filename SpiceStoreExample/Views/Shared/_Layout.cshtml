@@ -1,7 +1,7 @@
 ﻿@using SpiceStoreExample.Utility
 @using Microsoft.AspNetCore.Http
 
-//dependency injection 
+<!--dependency injection-->
 @inject IHttpContextAccessor HttpContextAccessor
 
 <!DOCTYPE html>
@@ -12,7 +12,7 @@
     <title>@ViewData["Title"] - SpiceStoreExample</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 </head>
 <body class="search-background">
     <header>
@@ -53,7 +53,7 @@
                             if (HttpContextAccessor.HttpContext.Session.GetInt32(Consts.ShoppingCartCount) != null)
                             {
                                 <li style="color:white">
-                                    <a href="#" class="nav-link">
+                                    <a asp-area="Customer" asp-controller="Cart" asp-action="Index" class="nav-link">
                                         @{
                                             var count = HttpContextAccessor.HttpContext.Session.GetInt32(Consts.ShoppingCartCount);
                                         }
