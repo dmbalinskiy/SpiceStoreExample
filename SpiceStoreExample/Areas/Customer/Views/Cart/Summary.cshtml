@@ -42,7 +42,7 @@
                                             <label>Name</label>
                                         </div>
                                         <div class="col-9">
-                                            <input asp-for="@Model.OrderHeader.Pickupname" type="text" class="form-control" />
+                                            <input asp-for="@Model.OrderHeader.Pickupname" id="txtName" type="text" class="form-control" />
                                         </div>
                                     </div>
 
@@ -51,7 +51,7 @@
                                             <label>Phone</label>
                                         </div>
                                         <div class="col-9">
-                                            <input asp-for="@Model.OrderHeader.PhoneNumber" type="text" class="form-control" />
+                                            <input asp-for="@Model.OrderHeader.PhoneNumber" id="txtPhone" type="text" class="form-control" />
                                         </div>
                                     </div>
 
@@ -60,7 +60,7 @@
                                             <label>Date</label>
                                         </div>
                                         <div class="col-9">
-                                            <input asp-for="@Model.OrderHeader.PickupDate" id="datepicker" type="text" class="form-control" />
+                                            <input asp-for="@Model.OrderHeader.PickupDate" id="datepicker" value="" type="text" class="form-control" />
                                         </div>
                                     </div>
 
@@ -69,7 +69,7 @@
                                             <label>Time</label>
                                         </div>
                                         <div class="col-9">
-                                            <input asp-for="@Model.OrderHeader.PickUpTime" id="timepicker" type="text" class="form-control" />
+                                            <input asp-for="@Model.OrderHeader.PickUpTime" id="timepicker" value="" type="text" class="form-control" />
                                         </div>
                                     </div>
 
@@ -113,7 +113,7 @@
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <div class="text-success">
                                                     <h6 class="my-0">Promo Code</h6>
-                                                    <small class="text-muted">@Model.OrderHeader.CouponCode</small>
+                                                    <small class="text-success">@Model.OrderHeader.CouponCode</small>
                                                 </div>
                                                 <span class="text-success">$@(total - Model.OrderHeader.OrderTotal)</span>
                                             </li>
@@ -121,7 +121,7 @@
 
                                         <li class="list-group-item d-flex justify-content-between">
                                             <small class="text-info">Total (USD)</small>
-                                            <span class="text-info">$@(Model.OrderHeader.OrderTotal)</span>
+                                            <strong class="text-info">$@(Model.OrderHeader.OrderTotal)</strong>
                                         </li>
 
                                     </ul>
@@ -133,7 +133,17 @@
                     </div>
 
                     <div class="card-footer">
-                        
+                        <div class="row">
+                            <div class="col-12 col-md-4 offset-md-8">
+                                <button type="submit" 
+                                        id="btnPlaceOrder" 
+                                        onclick="return validateInput()" 
+                                        value="Place Order" 
+                                        class="btn btn-success form-control">
+                                    Place order
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -148,20 +158,82 @@
 
 @section Scripts {
 
-    <script>
-    $(function () {
-        var couponCode = document.getElementById("txtCouponCode").value;
-        if (couponCode.length > 0) {
-            document.getElementById("btnCoupon").style.display = 'none';
-            document.getElementById("btnRemoveCoupon").style.display = '';
-            $("#txtCouponCode").attr("disabled", true) ;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.js"></script>
+    
 
+    <script>
+        $(function () {
+            var minDt = 0;
+            if (getTimeFromCurrentDate >= 20) {
+                minDt = 1;
+            }
+
+            $("#datepicker").datepicker({ minDate: minDt, maxDate: "+1W" });
+            $("#timepicker").timepicker({ 'minTime': '11:00AM', 'maxTime': '9:00PM', step: '30' });
+        });
+
+        function setPickUpTime() {
+            var dateSelected = document.getElementById("datepicker").value;
+            var dt = new Date(dateSelected);
+            var today = new Date();
+
+            dt.setHours(0, 0, 0, 0);
+            if (dt > today) {
+                selectedTime = '11:00am';
+            }
+            else {
+                selectedTime = getTimeFromCurrentDate();
+            }
+
+            $("#timepicker").timepicker('option', 'minTime', selectedTime);
         }
-        else {
-            document.getElementById("btnCoupon").style.display = '';
-            document.getElementById("btnRemoveCoupon").style.display = 'none';
+
+        function getTimeFromCurrentDate() {
+            var curDt = new Date();
+            var minTime = "";
+            if (curDt.getHours() < 11) {
+                minTime = '12:00pm';
+            }
+            else {
+                if (curDt.getMinutes() < 30) {
+                    minTime = (curDt.getHours() + 1).toString() + ':30pm'
+                }
+                else {
+                    minTime = (curDt.getHours() + 2).toString() + ':00pm'
+                }
+            }
+
+            return minTime;
         }
-    })
+
+        $('#datepicker').change(function () {
+            setPickUpTime();
+        });
+
+        function validateInput() {
+            var time = document.getElementById("timepicker").value;
+            var dt = document.getElementById("datepicker").value;
+            var name = document.getElementById("txtName").value;
+            var phone = document.getElementById("txtPhone").value;
+
+            if (time.toString() == '') {
+                alert("Please select pickup time");
+                return false;
+            }
+            if (dt.toString() == '') {
+                alert("Please select pickup date");
+                return false;
+            }
+            if (name.toString() == '') {
+                alert("Please enter customer name");
+                return false;
+            }
+            if (phone.toString() == '') {
+                alert("Please enter cutomer phone");
+                return false;
+            }
+            return true;
+        }
     </script>
 
 }
