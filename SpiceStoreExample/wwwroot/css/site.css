@@ -117,3 +117,17 @@ body {
     background-color: #545b62;
     color: #fff
 }
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 70%;
+        margin: 1.75rem auto;
+    }
+}
+
+@media (min-width: 992) {
+    .modal-dialog {
+        max-width: 70%;
+        margin: 1.75rem auto;
+    }
+}
