@@ -1,8 +1,10 @@
 ﻿@model SpiceStoreExample.Models.ViewModels.OrderDetailsViewModel
+@using SpiceStoreExample.Utility
 @*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
-<form method="post">
+<form asp-action="OrderPickup" asp-controller="Order" asp-route-orderId="@Model.OrderHeader.Id" 
+      method="post">
 
     <!--Main - parent - div-->
     <div class="container row border ml-1 backgroundWhiteBorder10Padding" style="width: 100%">
@@ -108,7 +110,20 @@
                 </li>
             </ul>
 
-            <button type="submit" disabled class="btn btn-info form-control">@Model.OrderHeader.Status</button>
+            @if (Model.OrderHeader.Status.Equals(Consts.statusReady) &&
+            (User.IsInRole(Consts.ManagerUser) || User.IsInRole(Consts.FrontDeskUser)))
+            {
+                <button type="submit" class="btn btn-success form-control">
+                    <i class="far fa-thumbs-up"></i>&nbsp;Confirm Pickup
+                </button>
+            }
+            else
+            {
+                <button type="submit" disabled class="btn btn-info form-control">
+                    @Model.OrderHeader.Status
+                </button>
+            }
+
 
         </div>
 

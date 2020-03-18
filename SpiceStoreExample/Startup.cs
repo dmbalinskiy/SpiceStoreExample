@@ -42,9 +42,12 @@ namespace SpiceStoreExample
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddScoped<IDbInitializer, DbInitializer>();
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
-
             services.AddSingleton<IEmailSender, EmailSender>();
+            services.Configure<EmailOptions>(Configuration);
+            
+
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
@@ -53,6 +56,13 @@ namespace SpiceStoreExample
                 options.LoginPath = $"/Identity/Account/Login";
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
+
+            services.AddAuthentication().AddFacebook(facebookOptions =>
+            {
+                facebookOptions.AppId = "194629411965229";
+                facebookOptions.AppSecret = "830c65aaf8ee331dbb0cfc63b0764482";
+
             });
 
             services.AddSession(options =>
@@ -65,7 +75,9 @@ namespace SpiceStoreExample
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, 
+            IWebHostEnvironment env,
+            IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -87,6 +99,7 @@ namespace SpiceStoreExample
 
             //for .net core 3.xx
             StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
+            dbInitializer.Initialize();
 
             app.UseAuthentication();
             app.UseAuthorization();
